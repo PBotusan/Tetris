@@ -7,6 +7,14 @@ using namespace std;
 
 
 wstring tetromino[7];
+int fieldWidth = 12;
+int fieldHeight = 18;
+
+int screenWidth = 80;
+int screenHeight = 30;
+
+unsigned char* field = nullptr;
+
 
 // positionx, positiony
 int Rotate(int px, int py, int rotate) 
@@ -59,10 +67,79 @@ int main()
     tetromino[6].append(L".x..");
     tetromino[6].append(L".x..");
 
+    field = new unsigned char[fieldWidth*fieldHeight];
+    for (int i = 0; i < fieldWidth; i++)
+    {
+        for (int x = 0; x < fieldHeight; x++)
+        {
+            field[x * fieldWidth + x] = (x == 0 || x == fieldWidth - 1 || x == fieldHeight - 1) ? 9 : 0;
+        }
+    }
+
+    wchar_t* screen = new wchar_t[screenWidth * screenHeight];
+    for (int i = 0; i < screenWidth * screenHeight; i++) screen[i] = L' ';
+
+    HANDLE console = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL );
+    SetConsoleActiveBuffer(console);
+    DWORD dwBytesWritten = 0;
+
+    bool gameOver = false;
+
+    while (!gameOver)
+    {
+        // game timing
+
+        // Input
+
+        // game logic
+
+        // render output
+
+        //draw field
+        for (int  x = 0; x < fieldWidth; x++)
+        {
+            for (int y = 0; y < fieldHeight; y++)
+            {
+                screen[(y + 0)*screenWidth + (x + 2)] = L" ABCDEFG=#"[field[y*fieldWidth + x]];
+
+            }
+
+        }
 
 
+        //display frame
+        WriteConsoleOutputCharacter(console, screen, screenWidth * screenHeight, { 0,0 }, );
 
-    std::cout << "Hello World!\n";
+    }
+    return 0;
+}
+
+bool DoesTetrominoFit(int tetromino, int rotation, int posX, int posY) 
+{
+    for (int px = 0; px < 4; px++)
+    {
+        for (int py = 0; py < 4; py++)
+        {
+            // get index into piece
+            int pi = Rotate(px, py, rotation);
+
+            int fi = (posY + py) * fieldWidth + px;
+
+            if (posX + px >= 0 && posX + px < fieldWidth)
+            {
+                if (posY + py >= 0 && posY + py < fieldHeight) 
+                {
+                
+                }
+
+
+            }
+
+        }
+
+    }
+
+    return true;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
