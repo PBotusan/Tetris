@@ -2,8 +2,10 @@
 //
 
 #include <iostream>
+#include <windows.h>
 
 using namespace std;
+
 
 
 wstring tetromino[7];
@@ -13,7 +15,7 @@ int fieldHeight = 18;
 int screenWidth = 80;
 int screenHeight = 30;
 
-unsigned char* field = nullptr;
+unsigned char *field = nullptr;
 
 
 // positionx, positiony
@@ -80,7 +82,7 @@ int main()
     for (int i = 0; i < screenWidth * screenHeight; i++) screen[i] = L' ';
 
     HANDLE console = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL );
-    SetConsoleActiveBuffer(console);
+    SetConsoleActiveScreenBuffer(console);
     DWORD dwBytesWritten = 0;
 
     bool gameOver = false;
@@ -108,13 +110,13 @@ int main()
 
 
         //display frame
-        WriteConsoleOutputCharacter(console, screen, screenWidth * screenHeight, { 0,0 }, );
+        WriteConsoleOutputCharacter(console, screen, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
 
     }
     return 0;
 }
 
-bool DoesTetrominoFit(int tetromino, int rotation, int posX, int posY) 
+bool DoesTetrominoFit(int tetrominoParameter, int rotation, int posX, int posY) 
 {
     for (int px = 0; px < 4; px++)
     {
@@ -129,16 +131,14 @@ bool DoesTetrominoFit(int tetromino, int rotation, int posX, int posY)
             {
                 if (posY + py >= 0 && posY + py < fieldHeight) 
                 {
-                
+                    if (tetromino[tetrominoParameter][pi] == L'X' && field[fi] != 0) 
+                    {
+                        return false;
+                    }
                 }
-
-
             }
-
         }
-
     }
-
     return true;
 }
 
