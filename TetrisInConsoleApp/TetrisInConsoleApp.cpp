@@ -125,11 +125,19 @@ int main()
     bool bKey[4];
     bool rotateHold = false;
 
+    //time var
+    int speed = 20;
+    int speedCounter = 0;
+    bool forceDown = false;
+    
 
     while (!gameOver)
     {
         // ===================== Game timing =====================
-        this_thread::sleep_for(50ms);
+        this_thread::sleep_for(50ms); // game tick
+        speedCounter++;
+        forceDown = (speedCounter == speed);
+
 
         // ===================== Input: see if key is pressed ====================
         for (int key = 0; key < 4; key++)
@@ -177,7 +185,28 @@ int main()
               
         }
 
+        if (forceDown) 
+        {
+            if (DoesTetrominoFit(currentPiece, currentRotation, currentX, currentY + 1))
+                currentY++; // translate tetromino down.
+            else 
+            {
+                //lock the current piece in the field
 
+
+                //Check have we got any lines
+
+
+                // choose next piece
+
+
+                // if piece does not fit
+                gameOver = !DoesTetrominoFit(currentPiece, currentRotation, currentX, currentY);
+
+
+            
+            }
+        }
 
 
         // render output
