@@ -85,7 +85,14 @@ int main()
     SetConsoleActiveScreenBuffer(console);
     DWORD dwBytesWritten = 0;
 
+    // Game logic
     bool gameOver = false;
+
+    int currentPiece = 0;
+    int currentRotation = 0;
+    int currentX = fieldWidth / 2;
+    int currentY = 0;
+
 
     while (!gameOver)
     {
