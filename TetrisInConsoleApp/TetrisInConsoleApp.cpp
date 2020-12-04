@@ -123,6 +123,7 @@ int main()
 
     //input player
     bool bKey[4];
+    bool rotateHold = false;
 
 
     while (!gameOver)
@@ -162,6 +163,20 @@ int main()
                 currentY = currentY + 1;
             }
         }
+        if (bKey[3])
+        {
+            if (!rotateHold && DoesTetrominoFit(currentPiece, currentRotation + 1, currentX, currentY))
+            {
+                currentRotation = currentRotation + 1;
+                rotateHold = true;
+            }
+            else 
+            {
+                rotateHold = false;
+            }
+              
+        }
+
 
 
 
