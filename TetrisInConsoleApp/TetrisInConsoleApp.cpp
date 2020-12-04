@@ -192,9 +192,36 @@ int main()
             else 
             {
                 //lock the current piece in the field
+                for (int px = 0; px < 4; px++)
+                {
+                    for (int py = 0; py < 4; py++)
+                    {
+                        if (tetromino[currentPiece][Rotate(px, py, currentRotation)] == L'X')
+                            field[(currentY + py) * fieldWidth + (currentX + px)] = currentPiece + 1;
+                    }
+                }
 
 
                 //Check have we got any lines
+                for (int py = 0; py < 4; py++)
+                {
+                    if (currentY + py < fieldHeight - 1) 
+                    {
+                        bool line = true;
+                        for (int px = 0; px < fieldWidth -1; px++)
+                        {
+                            line &= (field[(currentY + py) * fieldWidth + px]) != 0;
+                        }
+
+                        if (line) 
+                        {
+                            for (int px = 1; px < fieldWidth - 1; px++)
+                            {
+                                field[(currentY + py) * fieldWidth + px] = 8;
+                            }
+                        }
+                    }
+                }
 
 
                 // choose next piece
@@ -206,6 +233,8 @@ int main()
                 // if piece does not fit
                 gameOver = !DoesTetrominoFit(currentPiece, currentRotation, currentX, currentY);
             }
+
+            speedCounter = 0;
         }
 
 
