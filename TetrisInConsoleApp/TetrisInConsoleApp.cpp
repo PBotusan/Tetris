@@ -12,8 +12,8 @@ wstring tetromino[7];
 int fieldWidth = 12;
 int fieldHeight = 18;
 
-int screenWidth = 80;
-int screenHeight = 30;
+int screenWidth = 120;  // standard console screen X (columns)
+int screenHeight = 30; // standard screen size Y (rows)
 
 unsigned char *field = nullptr;
 
@@ -34,47 +34,47 @@ int Rotate(int px, int py, int rotate)
 
 int main()
 {
-    tetromino[0].append(L"..x.");
-    tetromino[0].append(L"..x.");
-    tetromino[0].append(L"..x.");
-    tetromino[0].append(L"..x.");
+    tetromino[0].append(L"..X.");
+    tetromino[0].append(L"..X.");
+    tetromino[0].append(L"..X.");
+    tetromino[0].append(L"..X.");
 
-    tetromino[1].append(L"..x.");
-    tetromino[1].append(L".xx.");
-    tetromino[1].append(L".x..");
+    tetromino[1].append(L"..X.");
+    tetromino[1].append(L".XX.");
+    tetromino[1].append(L".X..");
     tetromino[1].append(L"....");
 
-    tetromino[2].append(L".x..");
-    tetromino[2].append(L".xx.");
-    tetromino[2].append(L"..x.");
+    tetromino[2].append(L".X..");
+    tetromino[2].append(L".XX.");
+    tetromino[2].append(L"..X.");
     tetromino[2].append(L"....");
 
     tetromino[3].append(L"....");
-    tetromino[3].append(L".xx.");
-    tetromino[3].append(L".xx.");
+    tetromino[3].append(L".XX.");
+    tetromino[3].append(L".XX.");
     tetromino[3].append(L"....");
 
-    tetromino[4].append(L"..x.");
-    tetromino[4].append(L".xx.");
-    tetromino[4].append(L"..x.");
+    tetromino[4].append(L"..X.");
+    tetromino[4].append(L".XX.");
+    tetromino[4].append(L"..X.");
     tetromino[4].append(L"....");
 
     tetromino[5].append(L"....");
-    tetromino[5].append(L".xx.");
-    tetromino[5].append(L"..x.");
-    tetromino[5].append(L"..x.");
+    tetromino[5].append(L".XX.");
+    tetromino[5].append(L"..X.");
+    tetromino[5].append(L"..X.");
 
     tetromino[6].append(L"....");
-    tetromino[6].append(L".xx.");
-    tetromino[6].append(L".x..");
-    tetromino[6].append(L".x..");
+    tetromino[6].append(L".XX.");
+    tetromino[6].append(L".X..");
+    tetromino[6].append(L".X..");
 
     field = new unsigned char[fieldWidth*fieldHeight];
-    for (int i = 0; i < fieldWidth; i++)
+    for (int x = 0; x < fieldWidth; x++)
     {
-        for (int x = 0; x < fieldHeight; x++)
+        for (int y = 0; y < fieldHeight; y++)
         {
-            field[x * fieldWidth + x] = (x == 0 || x == fieldWidth - 1 || x == fieldHeight - 1) ? 9 : 0;
+            field[y * fieldWidth + x] = (x == 0 || x == fieldWidth - 1 || y == fieldHeight - 1) ? 9 : 0;
         }
     }
 
@@ -97,6 +97,7 @@ int main()
     while (!gameOver)
     {
         // game timing
+        this_thread::sleep_for(50ms);
 
         // Input
 
@@ -109,11 +110,20 @@ int main()
         {
             for (int y = 0; y < fieldHeight; y++)
             {
-                screen[(y + 0)*screenWidth + (x + 2)] = L" ABCDEFG=#"[field[y*fieldWidth + x]];
-
+                screen[(y + 2)*screenWidth + (x + 2)] = L" ABCDEFG=#"[field[y*fieldWidth + x]];
             }
-
         }
+
+        //draw current piece
+        for (int px = 0; px < 4; px++)
+        {
+            for (int py = 0; py < 4; py++)
+            {
+                if (tetromino[currentPiece][Rotate(px, py, currentRotation)] == L'X')
+                    screen[(currentY + py + 2) * screenWidth + (currentX + px + 2)] = currentPiece + 65; // 65 is Asci for A
+            }
+        }
+
 
 
         //display frame
