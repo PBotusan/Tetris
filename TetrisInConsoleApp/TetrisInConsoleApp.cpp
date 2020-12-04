@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <windows.h>
+#include <thread>
 
 using namespace std;
 
@@ -30,6 +31,33 @@ int Rotate(int px, int py, int rotate)
     }
     return 0;
 
+}
+
+bool DoesTetrominoFit(int tetrominoParameter, int rotation, int posX, int posY)
+{
+    for (int px = 0; px < 4; px++)
+    {
+        for (int py = 0; py < 4; py++)
+        {
+            // get index into piece
+            int pi = Rotate(px, py, rotation);
+
+            // get index into field
+            int fi = (posY + py) * fieldWidth + (posX + px);
+
+            if (posX + px >= 0 && posX + px < fieldWidth)
+            {
+                if (posY + py >= 0 && posY + py < fieldHeight)
+                {
+                    if (tetromino[tetrominoParameter][pi] == L'X' && field[fi] != 0)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+    return true;
 }
 
 int main()
@@ -93,15 +121,49 @@ int main()
     int currentX = fieldWidth / 2;
     int currentY = 0;
 
+    //input player
+    bool bKey[4];
+
 
     while (!gameOver)
     {
-        // game timing
+        // ===================== Game timing =====================
         this_thread::sleep_for(50ms);
 
-        // Input
+        // ===================== Input: see if key is pressed ====================
+        for (int key = 0; key < 4; key++)
+        {
+            // [0] hexdec = x27: right key
+            // [1] hexdec = x25: left key
+            // [2] hexdec = x28Z: Down key
+            bKey[key] = (0x8000 & GetAsyncKeyState((unsigned char)("\x27\x25\x28Z"[key]))) != 0;
 
-        // game logic
+        }
+
+        // ===================== Game-Logic =====================
+        if (bKey[0]) 
+        {
+            if (DoesTetrominoFit(currentPiece, currentRotation, currentX + 1, currentY)) 
+            {
+                currentX = currentX + 1;
+            }
+        }
+        if (bKey[1])
+        {
+            if (DoesTetrominoFit(currentPiece, currentRotation, currentX - 1, currentY))
+            {
+                currentX = currentX - 1;
+            }
+        }
+        if (bKey[2])
+        {
+            if (DoesTetrominoFit(currentPiece, currentRotation, currentX, currentY + 1))
+            {
+                currentY = currentY + 1;
+            }
+        }
+
+
 
         // render output
 
@@ -120,7 +182,7 @@ int main()
             for (int py = 0; py < 4; py++)
             {
                 if (tetromino[currentPiece][Rotate(px, py, currentRotation)] == L'X')
-                    screen[(currentY + py + 2) * screenWidth + (currentX + px + 2)] = currentPiece + 65; // 65 is Asci for A
+                    screen[(currentY + py + 2) * screenWidth + (currentX + px + 2)] = currentPiece + 65; // 65 is Ascii for A
             }
         }
 
@@ -133,31 +195,7 @@ int main()
     return 0;
 }
 
-bool DoesTetrominoFit(int tetrominoParameter, int rotation, int posX, int posY) 
-{
-    for (int px = 0; px < 4; px++)
-    {
-        for (int py = 0; py < 4; py++)
-        {
-            // get index into piece
-            int pi = Rotate(px, py, rotation);
 
-            int fi = (posY + py) * fieldWidth + px;
-
-            if (posX + px >= 0 && posX + px < fieldWidth)
-            {
-                if (posY + py >= 0 && posY + py < fieldHeight) 
-                {
-                    if (tetromino[tetrominoParameter][pi] == L'X' && field[fi] != 0) 
-                    {
-                        return false;
-                    }
-                }
-            }
-        }
-    }
-    return true;
-}
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
