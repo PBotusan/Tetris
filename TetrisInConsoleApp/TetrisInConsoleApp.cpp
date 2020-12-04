@@ -198,13 +198,13 @@ int main()
 
 
                 // choose next piece
-
+                currentX = fieldWidth / 2;
+                currentY = 0;
+                currentRotation = 0;
+                currentPiece = rand() % 7;
 
                 // if piece does not fit
                 gameOver = !DoesTetrominoFit(currentPiece, currentRotation, currentX, currentY);
-
-
-            
             }
         }
 
