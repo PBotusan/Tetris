@@ -4,6 +4,7 @@
 #include <iostream>
 #include <windows.h>
 #include <thread>
+#include <vector>
 
 using namespace std;
 
@@ -130,6 +131,9 @@ int main()
     int speedCounter = 0;
     bool forceDown = false;
     
+    //save line in vector
+    vector<int> vectorLine;
+
 
     while (!gameOver)
     {
@@ -219,6 +223,8 @@ int main()
                             {
                                 field[(currentY + py) * fieldWidth + px] = 8;
                             }
+
+                            vectorLine.push_back(currentY + py);
                         }
                     }
                 }
@@ -259,7 +265,27 @@ int main()
             }
         }
 
+        //empty the filled line
+        if (!vectorLine.empty()) 
+        {
+            // Display frame
+            WriteConsoleOutputCharacter(console, screen, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
+            this_thread::sleep_for(400ms); // short delay
 
+            for (auto &v : vectorLine)
+            {
+                for (int px = 0; px < fieldWidth - 1; px++)
+                {
+                    for (int py = v; py > 0; py--)
+                    {
+                        field[py * fieldWidth + px] = field[(py - 1) * fieldWidth + px];
+                        field[px] = 0;
+                    }
+
+                }
+
+            }
+        }
 
         //display frame
         WriteConsoleOutputCharacter(console, screen, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
