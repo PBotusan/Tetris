@@ -9,7 +9,6 @@
 using namespace std;
 
 
-
 wstring tetromino[7];
 int fieldWidth = 12;
 int fieldHeight = 18;
@@ -61,7 +60,15 @@ bool DoesTetrominoFit(int tetrominoParameter, int rotation, int posX, int posY)
     return true;
 }
 
-int main()
+void GameOver(HANDLE pConsole, int pPlayerScore)
+{
+    //game over text
+    CloseHandle(pConsole);
+    cout << "Game Over: Score: " << pPlayerScore << endl;
+    system("pause");
+}
+
+void TetrominoArrays() 
 {
     tetromino[0].append(L"..X.");
     tetromino[0].append(L"..X.");
@@ -97,6 +104,11 @@ int main()
     tetromino[6].append(L".XX.");
     tetromino[6].append(L".X..");
     tetromino[6].append(L".X..");
+}
+
+int main()
+{
+    TetrominoArrays();
 
     field = new unsigned char[fieldWidth*fieldHeight];
     for (int x = 0; x < fieldWidth; x++)
@@ -130,13 +142,20 @@ int main()
     int speed = 20;
     int speedCounter = 0;
     bool forceDown = false;
-    
+
+    int pieceCount = 0;
+    int playerScore = 0;
+
+   
+
     //save line in vector
     vector<int> vectorLine;
 
 
     while (!gameOver)
     {
+       
+
         // ===================== Game timing =====================
         this_thread::sleep_for(50ms); // game tick
         speedCounter++;
@@ -185,8 +204,7 @@ int main()
             else 
             {
                 rotateHold = false;
-            }
-              
+            } 
         }
 
         if (forceDown) 
@@ -202,6 +220,15 @@ int main()
                     {
                         if (tetromino[currentPiece][Rotate(px, py, currentRotation)] == L'X')
                             field[(currentY + py) * fieldWidth + (currentX + px)] = currentPiece + 1;
+                    }
+                }
+
+                pieceCount++;
+                if (pieceCount % 10 == 0)
+                {
+                    if (speed >= 10)
+                    {
+                        speed--;
                     }
                 }
 
@@ -228,6 +255,11 @@ int main()
                         }
                     }
                 }
+
+                // score systemm
+                playerScore += 25;
+                if (vectorLine.empty()) playerScore += (1 << vectorLine.size()) * 100;
+             
 
 
                 // choose next piece
@@ -265,6 +297,9 @@ int main()
             }
         }
 
+        //draw score
+        swprintf_s(&screen[2 * screenWidth + fieldWidth + 6], 16, L"SCORE: %8d", playerScore);
+
         //empty the filled line
         if (!vectorLine.empty()) 
         {
@@ -274,7 +309,7 @@ int main()
 
             for (auto &v : vectorLine)
             {
-                for (int px = 0; px < fieldWidth - 1; px++)
+                for (int px = 1; px < fieldWidth - 1; px++)
                 {
                     for (int py = v; py > 0; py--)
                     {
@@ -285,14 +320,18 @@ int main()
                 }
 
             }
+            vectorLine.clear();
         }
 
         //display frame
         WriteConsoleOutputCharacter(console, screen, screenWidth * screenHeight, { 0,0 }, &dwBytesWritten);
 
     }
-    return 0;
+
+ 
+    GameOver(console, playerScore);
 }
+
 
 
 
