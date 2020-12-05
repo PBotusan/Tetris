@@ -258,7 +258,7 @@ int main()
 
                 // score systemm
                 playerScore += 25;
-                if (vectorLine.empty()) playerScore += (1 << vectorLine.size()) * 100;
+                if (!vectorLine.empty()) playerScore += (1 << vectorLine.size()) * 100;
              
 
 
