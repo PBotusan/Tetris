@@ -9,6 +9,7 @@
 using namespace std;
 
 
+
 wstring tetromino[7];
 int fieldWidth = 12;
 int fieldHeight = 18;
